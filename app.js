@@ -92,21 +92,23 @@ const db = {
 };
 
 const DEFAULT_MEAL_PLAN = [
-  {s:'morning', time:'4:50 am',      title:'Wake up + black coffee',     sub:'Caffeine peaks at 5 am',              tag:'wake',  ord:1},
-  {s:'morning', time:'5:00 am',      title:'5g creatine monohydrate',    sub:'With water before cardio',            tag:'supp',  ord:2},
-  {s:'morning', time:'5:00–5:50 am', title:'Incline walking',            sub:'Fasted cardio — low intensity fat burn', tag:'cardio', ord:3},
-  {s:'morning', time:'5:50 am',      title:'Banana',                     sub:'Fast carb before strength training',  tag:'food',  ord:4},
-  {s:'morning', time:'6:00–7:30 am', title:'Strength training',          sub:'Log in the Workout tab',              tag:'gym',   ord:5},
-  {s:'morning', time:'7:30 am',      title:'Whey protein + banana/juice',sub:'Post-workout: protein + fast carb',   tag:'food',  ord:6},
-  {s:'meals',   time:'8:30 am',      title:'Breakfast',                  sub:'Sweet potato + eggs + egg whites',    tag:'meal',  ord:7},
-  {s:'supps',   time:'8:30 am',      title:'Vitamin D + B12',            sub:'Fat-soluble — take with breakfast',   tag:'supp',  ord:8},
-  {s:'meals',   time:'11:00 am',     title:'Mid-morning snack',          sub:'Buttermilk + peanuts + fruit',        tag:'meal',  ord:9},
-  {s:'meals',   time:'1:00 pm',      title:'Lunch',                      sub:'Chicken + veg + red rice + curd',     tag:'meal',  ord:10},
-  {s:'supps',   time:'1:00 pm',      title:'Fish oil + multivitamin',    sub:'Take with your largest meal',         tag:'supp',  ord:11},
-  {s:'meals',   time:'4:00 pm',      title:'Afternoon snack',            sub:'Greek yogurt or paneer + nuts',       tag:'meal',  ord:12},
-  {s:'evening', time:'7:30 pm',      title:'Dinner',                     sub:'Egg omelette + red rice + veg/salad', tag:'meal',  ord:13},
-  {s:'supps',   time:'9:30 pm',      title:'ZMA',                        sub:'30–60 min after dinner, empty stomach',tag:'supp', ord:14},
+  {s:'morning', time:'4:50 am',      title:'Wake up + black coffee',     sub:'Caffeine peaks at 5 am',              tag:'wake',  ord:1,  cal:5,   p:0,  c:0,  f:0},
+  {s:'morning', time:'5:00 am',      title:'5g creatine monohydrate',    sub:'With water before cardio',            tag:'supp',  ord:2,  cal:0,   p:0,  c:0,  f:0},
+  {s:'morning', time:'5:00–5:50 am', title:'Incline walking',            sub:'Fasted cardio — low intensity fat burn', tag:'cardio', ord:3, cal:-200, p:0, c:0, f:0},
+  {s:'morning', time:'5:50 am',      title:'Banana',                     sub:'Fast carb before strength training',  tag:'food',  ord:4,  cal:105, p:1,  c:27, f:0},
+  {s:'morning', time:'6:00–7:30 am', title:'Strength training',          sub:'Log in the Workout tab',              tag:'gym',   ord:5,  cal:-300, p:0, c:0,  f:0},
+  {s:'morning', time:'7:30 am',      title:'Whey protein + banana/juice',sub:'Post-workout: protein + fast carb',   tag:'food',  ord:6,  cal:280, p:30, c:38, f:3},
+  {s:'meals',   time:'8:30 am',      title:'Breakfast',                  sub:'Sweet potato + eggs + egg whites',    tag:'meal',  ord:7,  cal:450, p:30, c:45, f:14},
+  {s:'supps',   time:'8:30 am',      title:'Vitamin D + B12',            sub:'Fat-soluble — take with breakfast',   tag:'supp',  ord:8,  cal:0,   p:0,  c:0,  f:0},
+  {s:'meals',   time:'11:00 am',     title:'Mid-morning snack',          sub:'Buttermilk + peanuts + fruit',        tag:'meal',  ord:9,  cal:300, p:12, c:30, f:14},
+  {s:'meals',   time:'1:00 pm',      title:'Lunch',                      sub:'Chicken + veg + red rice + curd',     tag:'meal',  ord:10, cal:550, p:40, c:55, f:15},
+  {s:'supps',   time:'1:00 pm',      title:'Fish oil + multivitamin',    sub:'Take with your largest meal',         tag:'supp',  ord:11, cal:10,  p:0,  c:0,  f:1},
+  {s:'meals',   time:'4:00 pm',      title:'Afternoon snack',            sub:'Greek yogurt or paneer + nuts',       tag:'meal',  ord:12, cal:350, p:22, c:18, f:20},
+  {s:'evening', time:'7:30 pm',      title:'Dinner',                     sub:'Egg omelette + red rice + veg/salad', tag:'meal',  ord:13, cal:500, p:28, c:50, f:18},
+  {s:'supps',   time:'9:30 pm',      title:'ZMA',                        sub:'30–60 min after dinner, empty stomach',tag:'supp', ord:14, cal:0,   p:0,  c:0,  f:0},
 ];
+
+const MACRO_TARGETS = { cal: 2500, p: 160, c: 260, f: 80 }; // Daily targets in kcal / grams
 
 const DEFAULT_SPLIT = {
   1:{name:'Legs — quad focus',badge:'badge-leg',ex:[

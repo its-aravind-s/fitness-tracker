@@ -868,6 +868,174 @@ textarea.form-input { min-height: 120px; resize: vertical; }
 .shop-section { flex: 1; min-width: 0; }
 .shop-sections { display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0; }
 
+/* ─── CALORIE TRACKER ─── */
+.cal-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden; margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.cal-main {
+  display: flex; align-items: center; gap: 16px; padding: 16px 20px;
+}
+.cal-ring-wrap { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.cal-ring-svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.cal-ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+.cal-ring-fill {
+  fill: none; stroke-width: 6; stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease, stroke 0.4s;
+}
+.cal-ring-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center;
+}
+.cal-ring-val {
+  font-family: var(--font-mono); font-size: 16px; font-weight: 800;
+  color: var(--text); line-height: 1;
+}
+.cal-ring-unit { font-size: 8px; color: var(--text3); font-weight: 600; }
+.cal-info { flex: 1; min-width: 0; }
+.cal-title-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+.cal-title {
+  font-family: var(--font-head); font-size: 14px; font-weight: 800; color: var(--text);
+}
+.cal-status {
+  font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.cal-status.deficit { background: rgba(0,230,118,0.12); color: #00e676; }
+.cal-status.surplus { background: rgba(255,82,82,0.12); color: #ff5252; }
+.cal-status.on-track { background: rgba(255,196,0,0.12); color: #ffc400; }
+.cal-bar-wrap {
+  height: 8px; background: var(--surface2); border-radius: 4px;
+  overflow: hidden; margin-bottom: 8px; position: relative;
+}
+.cal-bar-fill {
+  height: 100%; border-radius: 4px; transition: width 0.5s ease, background 0.4s;
+}
+.cal-bar-target {
+  position: absolute; top: -2px; bottom: -2px; width: 2px;
+  background: var(--text2); border-radius: 1px;
+}
+.cal-stats {
+  display: flex; gap: 16px; font-size: 11px; color: var(--text2);
+}
+.cal-stats span { display: flex; align-items: center; gap: 4px; }
+.cal-stats strong { color: var(--text); font-family: var(--font-mono); font-weight: 700; }
+.cal-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.cal-dot.food { background: #4fc3f7; }
+.cal-dot.burn { background: #ff7043; }
+.cal-dot.extra { background: #ab47bc; }
+.cal-actions {
+  display: flex; gap: 0; border-top: 1px solid var(--border);
+}
+.cal-act-btn {
+  flex: 1; padding: 12px; border: none; background: transparent;
+  color: var(--text2); font-family: var(--font-mono); font-size: 12px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.cal-act-btn:first-child { border-right: 1px solid var(--border); }
+.cal-act-btn:hover { background: var(--surface2); color: var(--text); }
+.cal-act-btn .cal-act-icon { font-size: 16px; }
+.cal-adjust {
+  display: none; padding: 14px 20px; border-top: 1px solid var(--border);
+  animation: fadeUp 0.2s ease;
+}
+.cal-adjust.open { display: block; }
+.cal-adjust-row {
+  display: flex; gap: 8px; align-items: center;
+}
+.cal-adjust-input {
+  flex: 1; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text); font-family: var(--font-mono); font-size: 16px;
+  text-align: center; outline: none; -webkit-appearance: none; appearance: none;
+}
+.cal-adjust-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
+.cal-adjust-name {
+  flex: 2; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text); font-size: 13px; outline: none;
+}
+.cal-adjust-name:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
+.cal-adjust-btn {
+  padding: 10px 16px; border-radius: var(--r-sm); border: none;
+  font-family: var(--font-head); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.cal-adjust-btn.add { background: #4fc3f7; color: #000; }
+.cal-adjust-btn.sub { background: #ff7043; color: #fff; }
+.cal-adjust-btn:active { transform: scale(0.95); }
+.cal-extras {
+  margin-top: 10px; display: flex; flex-direction: column; gap: 6px;
+}
+.cal-extra-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  background: var(--surface2); border-radius: var(--r-sm);
+  border: 1px solid var(--border); font-size: 11px;
+}
+.cal-extra-name { flex: 1; color: var(--text2); }
+.cal-extra-val { font-family: var(--font-mono); font-weight: 700; }
+.cal-extra-val.pos { color: #4fc3f7; }
+.cal-extra-val.neg { color: #ff7043; }
+.cal-extra-del {
+  width: 20px; height: 20px; border-radius: 50%; border: none;
+  background: transparent; color: var(--text3); cursor: pointer;
+  font-size: 10px; display: flex; align-items: center; justify-content: center;
+}
+.cal-extra-del:hover { background: rgba(255,82,82,0.12); color: #ff5252; }
+.cal-macros {
+  display: flex; gap: 10px; padding: 0 20px 14px;
+}
+.cal-macro {
+  flex: 1; padding: 10px; background: var(--surface2);
+  border-radius: var(--r-sm); border: 1px solid var(--border);
+}
+.cal-macro-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.cal-macro-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cal-macro-label.protein { color: #4fc3f7; }
+.cal-macro-label.carbs { color: #ffc400; }
+.cal-macro-label.fat { color: #ff7043; }
+.cal-macro-val {
+  font-family: var(--font-mono); font-size: 13px; font-weight: 800; color: var(--text);
+}
+.cal-macro-val small { font-size: 9px; color: var(--text3); font-weight: 600; }
+.cal-macro-bar {
+  height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+}
+.cal-macro-bar-fill {
+  height: 100%; border-radius: 2px; transition: width 0.5s ease;
+}
+.cal-macro-bar-fill.protein { background: #4fc3f7; }
+.cal-macro-bar-fill.carbs { background: #ffc400; }
+.cal-macro-bar-fill.fat { background: #ff7043; }
+.cal-macro-target {
+  font-size: 8px; color: var(--text3); margin-top: 3px; text-align: right;
+  font-family: var(--font-mono);
+}
+.cal-adjust-macros {
+  display: flex; gap: 6px; margin-top: 8px;
+}
+.cal-adjust-macro-inp {
+  flex: 1; padding: 8px 6px; border-radius: var(--r-sm);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  text-align: center; outline: none; -webkit-appearance: none; appearance: none;
+}
+.cal-adjust-macro-inp:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
+.cal-adjust-macro-label {
+  font-size: 8px; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text3); text-align: center; margin-bottom: 3px; font-weight: 600;
+}
+
 /* ─── FASTING TRACKER ─── */
 .fast-page-header { margin-bottom: 20px; }
 .fast-page-title {
@@ -1044,6 +1212,7 @@ textarea.form-input { min-height: 120px; resize: vertical; }
     <div id="week-summary-container"></div>
     <div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
     <div class="prog-label" id="prog-label"></div>
+    <div id="calorie-tracker"></div>
     <div id="timeline-container"></div>
   </div>
 
@@ -1470,6 +1639,7 @@ async function renderAll() {
   document.getElementById('wo-date-sub').textContent = fd.sub;
   
   renderToday();
+  renderCalorieTracker();
   renderWorkout();
   renderWeeklySummary();
   renderShoppingBanner();
@@ -1592,6 +1762,7 @@ function renderToday() {
       currentData.checks = checks;
       await app.saveDayData(app.dateKey(offset), currentData);
       renderToday();
+      renderCalorieTracker();
     });
     // bell tap
     div.querySelector('.tl-bell').addEventListener('click', (e) => {
@@ -1615,6 +1786,189 @@ function parseTimeToHour(timeStr) {
   if (timeStr.toLowerCase().includes('pm') && h < 12) h += 12;
   if (timeStr.toLowerCase().includes('am') && h === 12) h = 0;
   return h;
+}
+
+// ─── CALORIE & MACRO TRACKER ───
+function renderCalorieTracker() {
+  const el = document.getElementById('calorie-tracker');
+  const checks = currentData.checks || {};
+  const extras = currentData.calExtras || [];
+  const T = MACRO_TARGETS;
+
+  // Calculate from checked plan items
+  let foodCal = 0, burnCal = 0, totP = 0, totC = 0, totF = 0;
+  app.mealPlan.forEach((item, i) => {
+    if (!checks['m' + i]) return;
+    const cal = item.cal || 0;
+    if (cal > 0) foodCal += cal; else if (cal < 0) burnCal += Math.abs(cal);
+    totP += item.p || 0;
+    totC += item.c || 0;
+    totF += item.f || 0;
+  });
+
+  // Add manual extras
+  let extraCal = 0;
+  extras.forEach(e => {
+    extraCal += e.cal || 0;
+    totP += e.p || 0;
+    totC += e.c || 0;
+    totF += e.f || 0;
+  });
+
+  const totalIntake = foodCal + Math.max(0, extraCal);
+  const totalBurn = burnCal + Math.abs(Math.min(0, extraCal));
+  const net = totalIntake - totalBurn;
+  const diff = net - T.cal;
+  const pct = Math.min(150, Math.max(0, (net / T.cal) * 100));
+
+  let status, statusClass;
+  if (Math.abs(diff) <= 100) { status = 'On Track'; statusClass = 'on-track'; }
+  else if (diff < 0) { status = `${Math.abs(diff)} deficit`; statusClass = 'deficit'; }
+  else { status = `+${diff} surplus`; statusClass = 'surplus'; }
+
+  const circ = 2 * Math.PI * 34;
+  const ringPct = Math.min(100, pct);
+  const ringOffset = circ - (circ * ringPct / 100);
+  const ringColor = pct > 110 ? '#ff5252' : pct > 90 ? '#00e676' : pct > 60 ? '#ffc400' : '#4fc3f7';
+  const barColor = ringColor;
+  const barWidth = Math.min(100, pct);
+  const targetPos = Math.min(98, (T.cal / (T.cal * 1.5)) * 100);
+
+  const mkMacro = (label, cls, val, target) => {
+    const p = Math.min(100, (val / target) * 100);
+    return `<div class="cal-macro">
+      <div class="cal-macro-hd">
+        <div class="cal-macro-label ${cls}">${label}</div>
+        <div class="cal-macro-val">${val}<small>g</small></div>
+      </div>
+      <div class="cal-macro-bar"><div class="cal-macro-bar-fill ${cls}" style="width:${p}%;"></div></div>
+      <div class="cal-macro-target">/ ${target}g</div>
+    </div>`;
+  };
+
+  const extrasHtml = extras.length > 0 ? `
+    <div class="cal-extras">
+      ${extras.map((e, i) => {
+        const macroStr = [e.p ? `P:${e.p}` : '', e.c ? `C:${e.c}` : '', e.f ? `F:${e.f}` : ''].filter(Boolean).join(' ');
+        return `<div class="cal-extra-item">
+          <div class="cal-extra-name">${e.name || (e.cal > 0 ? 'Extra food' : 'Deduction')}${macroStr ? ' <span style="color:var(--text3);font-size:9px;">' + macroStr + '</span>' : ''}</div>
+          <div class="cal-extra-val ${(e.cal||0) > 0 ? 'pos' : 'neg'}">${(e.cal||0) > 0 ? '+' : ''}${e.cal||0}</div>
+          <button class="cal-extra-del" onclick="deleteCalExtra(${i})">&#10005;</button>
+        </div>`;
+      }).join('')}
+    </div>` : '';
+
+  el.innerHTML = `
+    <div class="cal-card">
+      <div class="cal-main">
+        <div class="cal-ring-wrap">
+          <svg class="cal-ring-svg" viewBox="0 0 80 80">
+            <circle class="cal-ring-bg" cx="40" cy="40" r="34"/>
+            <circle class="cal-ring-fill" cx="40" cy="40" r="34"
+              stroke-dasharray="${circ}" stroke-dashoffset="${ringOffset}" stroke="${ringColor}"/>
+          </svg>
+          <div class="cal-ring-center">
+            <div class="cal-ring-val">${net}</div>
+            <div class="cal-ring-unit">kcal</div>
+          </div>
+        </div>
+        <div class="cal-info">
+          <div class="cal-title-row">
+            <div class="cal-title">Calories</div>
+            <div class="cal-status ${statusClass}">${status}</div>
+          </div>
+          <div class="cal-bar-wrap">
+            <div class="cal-bar-fill" style="width:${barWidth}%;background:${barColor};"></div>
+            <div class="cal-bar-target" style="left:${targetPos}%;" title="Target: ${T.cal} kcal"></div>
+          </div>
+          <div class="cal-stats">
+            <span><div class="cal-dot food"></div> Eaten <strong>${totalIntake}</strong></span>
+            <span><div class="cal-dot burn"></div> Burned <strong>${totalBurn}</strong></span>
+            ${extras.length > 0 ? `<span><div class="cal-dot extra"></div> Extra <strong>${extraCal > 0 ? '+' : ''}${extraCal}</strong></span>` : ''}
+          </div>
+        </div>
+      </div>
+      <div class="cal-macros">
+        ${mkMacro('Protein', 'protein', totP, T.p)}
+        ${mkMacro('Carbs', 'carbs', totC, T.c)}
+        ${mkMacro('Fat', 'fat', totF, T.f)}
+      </div>
+      <div class="cal-actions">
+        <button class="cal-act-btn" onclick="toggleCalAdjust('add')">
+          <span class="cal-act-icon">&#43;</span> Add Food
+        </button>
+        <button class="cal-act-btn" onclick="toggleCalAdjust('sub')">
+          <span class="cal-act-icon">&#8722;</span> Reduce
+        </button>
+      </div>
+      <div class="cal-adjust" id="cal-adjust-panel">
+        <div class="cal-adjust-row">
+          <input class="cal-adjust-name" id="cal-adj-name" placeholder="e.g. Biryani, Ice cream..." type="text">
+          <input class="cal-adjust-input" id="cal-adj-val" placeholder="kcal" type="number" inputmode="numeric" min="0">
+          <button class="cal-adjust-btn add" id="cal-adj-btn" onclick="saveCalAdjust()">Add</button>
+        </div>
+        <div class="cal-adjust-macros">
+          <div style="flex:1;"><div class="cal-adjust-macro-label">Protein (g)</div><input class="cal-adjust-macro-inp" id="cal-adj-p" placeholder="—" type="number" inputmode="numeric" min="0"></div>
+          <div style="flex:1;"><div class="cal-adjust-macro-label">Carbs (g)</div><input class="cal-adjust-macro-inp" id="cal-adj-c" placeholder="—" type="number" inputmode="numeric" min="0"></div>
+          <div style="flex:1;"><div class="cal-adjust-macro-label">Fat (g)</div><input class="cal-adjust-macro-inp" id="cal-adj-f" placeholder="—" type="number" inputmode="numeric" min="0"></div>
+        </div>
+        ${extrasHtml}
+      </div>
+    </div>`;
+}
+
+let calAdjustMode = 'add';
+
+function toggleCalAdjust(mode) {
+  calAdjustMode = mode;
+  const panel = document.getElementById('cal-adjust-panel');
+  const btn = document.getElementById('cal-adj-btn');
+  const nameInput = document.getElementById('cal-adj-name');
+  if (!panel) return;
+
+  const isOpen = panel.classList.contains('open') && ((mode === 'add' && btn?.classList.contains('add')) || (mode === 'sub' && btn?.classList.contains('sub')));
+  if (isOpen) { panel.classList.remove('open'); return; }
+
+  panel.classList.add('open');
+  if (btn) { btn.className = 'cal-adjust-btn ' + mode; btn.textContent = mode === 'add' ? 'Add' : 'Reduce'; }
+  if (nameInput) nameInput.placeholder = mode === 'add' ? 'e.g. Biryani, Ice cream...' : 'e.g. Skipped rice, Smaller portion...';
+  ['cal-adj-val','cal-adj-name','cal-adj-p','cal-adj-c','cal-adj-f'].forEach(id => {
+    const inp = document.getElementById(id); if (inp) inp.value = '';
+  });
+  const valInput = document.getElementById('cal-adj-val');
+  if (valInput) valInput.focus();
+}
+
+async function saveCalAdjust() {
+  const val = parseInt(document.getElementById('cal-adj-val')?.value) || 0;
+  const name = document.getElementById('cal-adj-name')?.value || '';
+  const pVal = parseInt(document.getElementById('cal-adj-p')?.value) || 0;
+  const cVal = parseInt(document.getElementById('cal-adj-c')?.value) || 0;
+  const fVal = parseInt(document.getElementById('cal-adj-f')?.value) || 0;
+
+  if (val <= 0 && pVal <= 0 && cVal <= 0 && fVal <= 0) { showToast('Enter calories or macros'); return; }
+
+  // Auto-estimate cal from macros if not provided
+  const estCal = val > 0 ? val : (pVal * 4 + cVal * 4 + fVal * 9);
+  const sign = calAdjustMode === 'add' ? 1 : -1;
+
+  if (!currentData.calExtras) currentData.calExtras = [];
+  currentData.calExtras.push({
+    name, cal: sign * estCal,
+    p: sign * pVal, c: sign * cVal, f: sign * fVal,
+    time: new Date().toISOString()
+  });
+
+  await app.saveDayData(app.dateKey(offset), currentData);
+  showToast(calAdjustMode === 'add' ? `+${estCal} kcal added` : `−${estCal} kcal reduced`);
+  renderCalorieTracker();
+}
+
+async function deleteCalExtra(idx) {
+  if (!currentData.calExtras) return;
+  currentData.calExtras.splice(idx, 1);
+  await app.saveDayData(app.dateKey(offset), currentData);
+  renderCalorieTracker();
 }
 
 function renderWorkout() {
