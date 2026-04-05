@@ -1,5 +1,5 @@
 const DB_NAME = 'FitTrackerDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 const db = {
   instance: null,
@@ -32,6 +32,9 @@ const db = {
         }
         if (!db.objectStoreNames.contains('goals')) {
           db.createObjectStore('goals', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('fasting')) {
+          db.createObjectStore('fasting', { keyPath: 'id' });
         }
       };
     });
@@ -349,12 +352,13 @@ let app = {
 
   async exportData() {
     const data = {
-      version: 2,
+      version: 3,
       exportDate: new Date().toISOString(),
       daily: await db.getAll('daily'),
       prs: await db.getAll('prs'),
       measurements: await db.getAll('measurements'),
       goals: await db.getAll('goals'),
+      fasting: await db.getAll('fasting'),
       settings: this.settings
     };
     return JSON.stringify(data, null, 2);
@@ -369,6 +373,7 @@ let app = {
       for (const p of data.prs || []) await db.set('prs', p);
       for (const m of data.measurements || []) await db.set('measurements', m);
       for (const g of data.goals || []) await db.set('goals', g);
+      for (const f of data.fasting || []) await db.set('fasting', f);
       if (data.settings) {
         this.settings = { ...this.settings, ...data.settings, key: 'main' };
         await this.saveSettings();
@@ -385,6 +390,7 @@ let app = {
     await db.clear('measurements');
     await db.clear('settings');
     await db.clear('goals');
+    await db.clear('fasting');
     this.mealPlan = [...DEFAULT_MEAL_PLAN];
     this.split = JSON.parse(JSON.stringify(DEFAULT_SPLIT));
     this.settings = null;
@@ -548,6 +554,92 @@ let app = {
     if (reminders.workout) check(reminders.workoutTime, '🏋️ Time for your workout!');
     if (reminders.meals) check(reminders.mealTime, '🥗 Don\'t forget your meals!');
     if (reminders.supplements) check(reminders.suppTime, '💊 Time for supplements!');
+  },
+
+  // ─── FASTING TRACKER ───
+  async getFastingState() {
+    return await db.get('fasting', 'active_fast') || null;
+  },
+
+  async startFast() {
+    const fast = {
+      id: 'active_fast',
+      startTime: new Date().toISOString(),
+      targetHours: 36,
+      active: true
+    };
+    await db.set('fasting', fast);
+    return fast;
+  },
+
+  async endFast(completed = true) {
+    const active = await this.getFastingState();
+    if (!active) return null;
+    const endTime = new Date().toISOString();
+    const durationMs = new Date(endTime) - new Date(active.startTime);
+    const durationHrs = Math.round((durationMs / 3600000) * 10) / 10;
+
+    // Save to history
+    const entry = {
+      id: 'f_' + Date.now(),
+      startTime: active.startTime,
+      endTime,
+      targetHours: active.targetHours,
+      actualHours: durationHrs,
+      completed: completed && durationHrs >= active.targetHours
+    };
+    await db.set('fasting', entry);
+
+    // Remove active fast
+    await db.delete('fasting', 'active_fast');
+    return entry;
+  },
+
+  async getFastingHistory() {
+    const all = await db.getAll('fasting');
+    return all
+      .filter(f => f.id !== 'active_fast' && f.startTime)
+      .sort((a, b) => b.startTime.localeCompare(a.startTime));
+  },
+
+  getNextFastDate(history) {
+    // Check for user-set custom date first
+    if (this.settings?.nextFastDate) {
+      const custom = new Date(this.settings.nextFastDate + 'T00:00:00');
+      if (custom >= new Date(new Date().toISOString().slice(0,10) + 'T00:00:00')) return custom;
+      // Custom date is in the past — clear it
+      delete this.settings.nextFastDate;
+    }
+    const intervalMonths = 2;
+    if (!history || history.length === 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return d;
+    }
+    const lastFast = history[0];
+    const lastDate = new Date(lastFast.endTime || lastFast.startTime);
+    const next = new Date(lastDate);
+    next.setMonth(next.getMonth() + intervalMonths);
+    if (next < new Date()) {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return d;
+    }
+    return next;
+  },
+
+  async setNextFastDate(dateStr) {
+    if (!this.settings) await this.loadSettings();
+    if (dateStr) {
+      this.settings.nextFastDate = dateStr;
+    } else {
+      delete this.settings.nextFastDate;
+    }
+    await this.saveSettings();
+  },
+
+  async deleteFastEntry(id) {
+    await db.delete('fasting', id);
   },
 
   async getExerciseHistory(exerciseName, limit = 10) {

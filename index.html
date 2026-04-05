@@ -139,8 +139,8 @@ body::before {
 [data-theme="light"] .bottom-nav { background: rgba(240,242,245,0.8); }
 .nav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 10px 4px; gap: 5px; cursor: pointer; border: none; background: transparent;
-  color: var(--text3); font-family: var(--font-mono); font-size: 10px; font-weight: 400;
+  padding: 8px 2px; gap: 4px; cursor: pointer; border: none; background: transparent;
+  color: var(--text3); font-family: var(--font-mono); font-size: 9px; font-weight: 400;
   transition: all 0.25s ease; border-radius: var(--r-sm); position: relative;
 }
 .nav-item.active {
@@ -867,6 +867,154 @@ textarea.form-input { min-height: 120px; resize: vertical; }
 }
 .shop-section { flex: 1; min-width: 0; }
 .shop-sections { display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0; }
+
+/* ─── FASTING TRACKER ─── */
+.fast-page-header { margin-bottom: 20px; }
+.fast-page-title {
+  font-family: var(--font-head); font-size: 24px; font-weight: 800; color: var(--text);
+}
+.fast-page-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.fast-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.fast-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 20px; border-bottom: 1px solid var(--border);
+}
+.fast-header-icon { font-size: 24px; }
+.fast-header-info { flex: 1; }
+.fast-header-title {
+  font-family: var(--font-head); font-size: 16px; font-weight: 800; color: var(--text);
+}
+.fast-header-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+.fast-ring-area {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 20px 20px; position: relative;
+}
+.fast-ring-wrap { position: relative; width: 180px; height: 180px; }
+.fast-ring-svg { width: 180px; height: 180px; transform: rotate(-90deg); }
+.fast-ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+.fast-ring-fill {
+  fill: none; stroke-width: 8; stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease, stroke 0.5s;
+}
+.fast-ring-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center;
+}
+.fast-timer {
+  font-family: var(--font-mono); font-size: 28px; font-weight: 800;
+  color: var(--text); line-height: 1;
+}
+.fast-timer-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+.fast-pct {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  color: var(--green); margin-top: 4px;
+}
+
+.fast-phases {
+  display: flex; gap: 4px; width: 100%; margin-top: 16px;
+}
+.fast-phase {
+  flex: 1; padding: 8px 4px; border-radius: var(--r-sm);
+  text-align: center; border: 1px solid var(--border);
+  background: var(--surface2); transition: all 0.3s;
+}
+.fast-phase.active {
+  border-color: var(--green); background: var(--green-dim);
+}
+.fast-phase-icon { font-size: 14px; }
+.fast-phase-label { font-size: 7px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text3); margin-top: 2px; }
+.fast-phase.active .fast-phase-label { color: var(--green); }
+
+.fast-actions {
+  display: flex; gap: 10px; padding: 0 20px 20px;
+}
+.fast-btn {
+  flex: 1; padding: 14px; border-radius: var(--r);
+  font-family: var(--font-head); font-size: 14px; font-weight: 700;
+  border: none; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.fast-btn:active { transform: scale(0.97); }
+.fast-btn-start {
+  background: linear-gradient(135deg, #00e676, #00c853);
+  color: #000; box-shadow: 0 4px 15px rgba(0,230,118,0.3);
+}
+.fast-btn-end {
+  background: linear-gradient(135deg, #ff5252, #d50000);
+  color: #fff; box-shadow: 0 4px 15px rgba(255,82,82,0.3);
+}
+.fast-btn-secondary {
+  background: var(--surface2); color: var(--text2);
+  border: 1px solid var(--border);
+}
+
+.fast-schedule {
+  padding: 14px 20px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.fast-schedule-icon { font-size: 16px; }
+.fast-schedule-text { flex: 1; }
+.fast-schedule-label { font-size: 11px; color: var(--text2); }
+.fast-schedule-date { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--text); }
+.fast-schedule-days {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 6px;
+  background: var(--amber-dim); color: var(--amber);
+}
+
+.fast-history { padding: 14px 20px; border-top: 1px solid var(--border); }
+.fast-history-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text3); margin-bottom: 10px;
+}
+.fast-history-list { display: flex; flex-direction: column; gap: 8px; }
+.fast-history-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: var(--surface2);
+  border-radius: var(--r-sm); border: 1px solid var(--border);
+}
+.fast-history-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.fast-history-dot.completed { background: var(--green); box-shadow: 0 0 6px rgba(0,230,118,0.4); }
+.fast-history-dot.partial { background: var(--amber); box-shadow: 0 0 6px rgba(255,196,0,0.4); }
+.fast-history-info { flex: 1; }
+.fast-history-date { font-size: 12px; font-weight: 600; color: var(--text); }
+.fast-history-detail { font-size: 10px; color: var(--text2); margin-top: 1px; }
+.fast-history-dur {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--text);
+}
+.fast-empty {
+  text-align: center; padding: 24px 20px; color: var(--text3); font-size: 12px;
+}
+.fast-edit-btn {
+  width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: all 0.2s; flex-shrink: 0;
+}
+.fast-edit-btn:hover { background: var(--green-dim); color: var(--green); border-color: var(--green); }
+.fast-date-input {
+  flex: 1; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--border2); background: var(--surface);
+  color: var(--text); font-family: var(--font-mono); font-size: 14px;
+  outline: none; transition: border-color 0.2s;
+  color-scheme: dark;
+}
+[data-theme="light"] .fast-date-input { color-scheme: light; }
+.fast-date-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
+.fast-del-btn {
+  width: 26px; height: 26px; border-radius: 50%; border: none;
+  background: transparent; color: var(--text3); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: all 0.2s; flex-shrink: 0;
+}
+.fast-del-btn:hover { background: rgba(255,82,82,0.12); color: #ff5252; }
 </style>
 </head>
 <body>
@@ -897,6 +1045,15 @@ textarea.form-input { min-height: 120px; resize: vertical; }
     <div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
     <div class="prog-label" id="prog-label"></div>
     <div id="timeline-container"></div>
+  </div>
+
+  <!-- FASTING PAGE -->
+  <div class="page" id="pg-fasting">
+    <div class="fast-page-header">
+      <div class="fast-page-title">Fasting</div>
+      <div class="fast-page-sub">36-hour fast &middot; Every 2 months</div>
+    </div>
+    <div id="fasting-tracker"></div>
   </div>
 
   <!-- WORKOUT PAGE -->
@@ -1136,6 +1293,10 @@ textarea.form-input { min-height: 120px; resize: vertical; }
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     Progress
   </button>
+  <button class="nav-item" onclick="goPage('fasting',this)">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Fasting
+  </button>
   <button class="nav-item" onclick="goPage('settings',this)">
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     Settings
@@ -1272,6 +1433,7 @@ function goPage(id, btn) {
   document.getElementById('pg-'+id).classList.add('active');
   if (btn) btn.classList.add('active');
   if (id === 'progress') renderProgress();
+  if (id === 'fasting') renderFastingTracker();
 }
 
 function switchProgressTab(tab, btn) {
@@ -1640,6 +1802,215 @@ async function saveWorkout() {
   
   showToast(newPRs > 0 ? `Saved! ${newPRs} new PR${newPRs>1?'s':''}` : 'Workout saved!');
   renderProgress();
+}
+
+// ─── FASTING TRACKER ───
+let fastingTimerInterval = null;
+
+async function renderFastingTracker() {
+  const el = document.getElementById('fasting-tracker');
+  const active = await app.getFastingState();
+  const history = await app.getFastingHistory();
+  const nextDate = app.getNextFastDate(history);
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmtD = d => `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  const daysUntil = Math.ceil((nextDate - new Date()) / 86400000);
+
+  const circ = 2 * Math.PI * 78; // radius 78
+
+  if (active && active.active) {
+    // Active fast — show live timer + ring
+    const startMs = new Date(active.startTime).getTime();
+    const targetMs = active.targetHours * 3600000;
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const elapsed = now - startMs;
+      const pct = Math.min(100, (elapsed / targetMs) * 100);
+      const hrs = Math.floor(elapsed / 3600000);
+      const mins = Math.floor((elapsed % 3600000) / 60000);
+      const secs = Math.floor((elapsed % 60000) / 1000);
+      const remaining = Math.max(0, targetMs - elapsed);
+      const remHrs = Math.floor(remaining / 3600000);
+      const remMins = Math.floor((remaining % 3600000) / 60000);
+
+      // Fasting phases
+      const phase = hrs < 4 ? 0 : hrs < 12 ? 1 : hrs < 24 ? 2 : 3;
+
+      // Ring color based on progress
+      const ringColor = pct >= 100 ? '#00e676' : pct > 66 ? '#66bb6a' : pct > 33 ? '#ffc400' : '#ff7043';
+      const offset = circ - (circ * Math.min(pct, 100) / 100);
+
+      const timerEl = document.getElementById('fast-live-timer');
+      const pctEl = document.getElementById('fast-live-pct');
+      const subEl = document.getElementById('fast-live-sub');
+      const ringEl = document.getElementById('fast-ring-progress');
+      if (timerEl) timerEl.textContent = `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+      if (pctEl) pctEl.textContent = `${Math.round(pct)}% complete`;
+      if (subEl) subEl.textContent = pct >= 100 ? 'Target reached!' : `${remHrs}h ${remMins}m remaining`;
+      if (ringEl) {
+        ringEl.style.strokeDashoffset = offset;
+        ringEl.style.stroke = ringColor;
+      }
+      // Update phases
+      document.querySelectorAll('.fast-phase').forEach((p, i) => {
+        p.classList.toggle('active', i <= phase);
+      });
+    };
+
+    const startFmt = new Date(active.startTime);
+    const startStr = `Started ${fmtD(startFmt)} at ${startFmt.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+
+    el.innerHTML = `
+      <div class="fast-card">
+        <div class="fast-header">
+          <div class="fast-header-icon">&#9201;</div>
+          <div class="fast-header-info">
+            <div class="fast-header-title">Fasting Active</div>
+            <div class="fast-header-sub">${startStr} &middot; Target: ${active.targetHours}h</div>
+          </div>
+        </div>
+        <div class="fast-ring-area">
+          <div class="fast-ring-wrap">
+            <svg class="fast-ring-svg" viewBox="0 0 180 180">
+              <circle class="fast-ring-bg" cx="90" cy="90" r="78"/>
+              <circle class="fast-ring-fill" id="fast-ring-progress" cx="90" cy="90" r="78"
+                stroke-dasharray="${circ}" stroke-dashoffset="${circ}" stroke="#ff7043"/>
+            </svg>
+            <div class="fast-ring-center">
+              <div class="fast-timer" id="fast-live-timer">00:00:00</div>
+              <div class="fast-timer-sub" id="fast-live-sub">calculating...</div>
+              <div class="fast-pct" id="fast-live-pct">0%</div>
+            </div>
+          </div>
+          <div class="fast-phases">
+            <div class="fast-phase"><div class="fast-phase-icon">&#127869;</div><div class="fast-phase-label">Fed</div></div>
+            <div class="fast-phase"><div class="fast-phase-icon">&#128293;</div><div class="fast-phase-label">Early Fast</div></div>
+            <div class="fast-phase"><div class="fast-phase-icon">&#9889;</div><div class="fast-phase-label">Fat Burn</div></div>
+            <div class="fast-phase"><div class="fast-phase-icon">&#129516;</div><div class="fast-phase-label">Deep Fast</div></div>
+          </div>
+        </div>
+        <div class="fast-actions">
+          <button class="fast-btn fast-btn-end" onclick="endFasting()">&#9724; End Fast</button>
+        </div>
+      </div>`;
+
+    // Start live timer
+    if (fastingTimerInterval) clearInterval(fastingTimerInterval);
+    updateTimer();
+    fastingTimerInterval = setInterval(updateTimer, 1000);
+
+  } else {
+    // No active fast — show schedule + history
+    if (fastingTimerInterval) { clearInterval(fastingTimerInterval); fastingTimerInterval = null; }
+
+    const nextDateISO = nextDate.toISOString().slice(0, 10);
+    const isCustom = !!app.settings?.nextFastDate;
+
+    const historyHtml = history.length > 0 ? `
+      <div class="fast-history">
+        <div class="fast-history-title">Past Fasts</div>
+        <div class="fast-history-list">
+          ${history.slice(0, 10).map(h => {
+            const sd = new Date(h.startTime);
+            const hrs = Math.floor(h.actualHours);
+            const mins = Math.round((h.actualHours - hrs) * 60);
+            return `<div class="fast-history-item">
+              <div class="fast-history-dot ${h.completed ? 'completed' : 'partial'}"></div>
+              <div class="fast-history-info">
+                <div class="fast-history-date">${fmtD(sd)}</div>
+                <div class="fast-history-detail">${h.completed ? 'Completed' : 'Ended early'} &middot; Target: ${h.targetHours}h</div>
+              </div>
+              <div class="fast-history-dur">${hrs}h ${mins}m</div>
+              <button class="fast-del-btn" onclick="deleteFastEntry('${h.id}')" title="Delete">&#10005;</button>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
+    el.innerHTML = `
+      <div class="fast-card">
+        <div class="fast-header">
+          <div class="fast-header-icon">&#9201;</div>
+          <div class="fast-header-info">
+            <div class="fast-header-title">36h Fasting Tracker</div>
+            <div class="fast-header-sub">Every 2 months &middot; ${history.length} fast${history.length !== 1 ? 's' : ''} completed</div>
+          </div>
+        </div>
+        <div class="fast-schedule">
+          <div class="fast-schedule-icon">&#128197;</div>
+          <div class="fast-schedule-text">
+            <div class="fast-schedule-label">Next scheduled fast${isCustom ? ' (custom)' : ''}</div>
+            <div class="fast-schedule-date" id="fast-date-display">${fmtD(nextDate)}</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <div class="fast-schedule-days">${daysUntil <= 0 ? 'Due now' : daysUntil === 1 ? 'Tomorrow' : daysUntil + 'd away'}</div>
+            <button class="fast-edit-btn" onclick="editFastDate()" title="Change date">&#9998;</button>
+          </div>
+        </div>
+        <div id="fast-date-editor" style="display:none;padding:0 20px 14px;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="date" class="fast-date-input" id="fast-date-input" value="${nextDateISO}" min="${new Date().toISOString().slice(0,10)}">
+            <button class="fast-btn fast-btn-start" style="flex:0;padding:10px 16px;font-size:12px;" onclick="saveFastDate()">Save</button>
+            ${isCustom ? '<button class="fast-btn fast-btn-secondary" style="flex:0;padding:10px 16px;font-size:12px;" onclick="resetFastDate()">Reset</button>' : ''}
+          </div>
+        </div>
+        <div class="fast-actions">
+          <button class="fast-btn fast-btn-start" onclick="startFasting()">&#9654; Start Fast</button>
+        </div>
+        ${historyHtml}
+        ${history.length === 0 ? '<div class="fast-empty">No fasting history yet. Start your first 36-hour fast!</div>' : ''}
+      </div>`;
+  }
+}
+
+async function startFasting() {
+  await app.startFast();
+  showToast('Fast started! Stay strong 💪');
+  renderFastingTracker();
+}
+
+function editFastDate() {
+  const editor = document.getElementById('fast-date-editor');
+  if (editor) editor.style.display = editor.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveFastDate() {
+  const input = document.getElementById('fast-date-input');
+  if (!input || !input.value) return;
+  await app.setNextFastDate(input.value);
+  showToast('Fast date updated');
+  renderFastingTracker();
+}
+
+async function resetFastDate() {
+  await app.setNextFastDate(null);
+  showToast('Reset to auto-schedule');
+  renderFastingTracker();
+}
+
+async function deleteFastEntry(id) {
+  if (!confirm('Delete this fasting entry?')) return;
+  await app.deleteFastEntry(id);
+  showToast('Entry deleted');
+  renderFastingTracker();
+}
+
+async function endFasting() {
+  const active = await app.getFastingState();
+  if (!active) return;
+  const elapsed = (Date.now() - new Date(active.startTime).getTime()) / 3600000;
+  const hrs = Math.floor(elapsed);
+  const mins = Math.round((elapsed - hrs) * 60);
+
+  if (elapsed < active.targetHours) {
+    if (!confirm(`You've fasted ${hrs}h ${mins}m out of ${active.targetHours}h.\nEnd early?`)) return;
+  }
+  const result = await app.endFast(true);
+  if (fastingTimerInterval) { clearInterval(fastingTimerInterval); fastingTimerInterval = null; }
+  showToast(result.completed ? 'Fast completed! Amazing discipline! 🏆' : `Fast ended at ${hrs}h ${mins}m. Good effort!`);
+  renderFastingTracker();
 }
 
 async function renderProgress() {
