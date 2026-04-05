@@ -550,6 +550,90 @@ let app = {
     if (reminders.supplements) check(reminders.suppTime, '💊 Time for supplements!');
   },
 
+  async getExerciseHistory(exerciseName, limit = 10) {
+    const all = await db.getAll('daily');
+    const sessions = [];
+    all.forEach(day => {
+      if (!day.sets || !day.date) return;
+      const d = new Date(day.date + 'T00:00:00');
+      const dow = d.getDay();
+      const split = this.split[dow];
+      if (!split) return;
+      split.ex.forEach((ex, ei) => {
+        if (ex.n !== exerciseName) return;
+        const ek = 'ex' + ei;
+        const sets = day.sets[ek];
+        if (!sets || sets.length === 0) return;
+        const completed = sets.filter(s => s.done && s.kg && s.reps);
+        if (completed.length === 0) return;
+        const maxKg = Math.max(...completed.map(s => parseFloat(s.kg)));
+        const avgReps = Math.round(completed.reduce((sum, s) => sum + parseInt(s.reps), 0) / completed.length);
+        const allSetsLogged = sets.every(s => s.done);
+        sessions.push({
+          date: day.date,
+          maxKg,
+          avgReps,
+          totalSets: sets.length,
+          completedSets: completed.length,
+          allSetsLogged,
+          sets: completed.map(s => ({ kg: parseFloat(s.kg), reps: parseInt(s.reps) }))
+        });
+      });
+    });
+    return sessions.sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
+  },
+
+  async getWeightSuggestion(exerciseName, targetSets, targetReps) {
+    const history = await this.getExerciseHistory(exerciseName, 8);
+    if (history.length === 0) return null;
+
+    const meta = EXERCISE_META[exerciseName] || {};
+    const group = meta.group || 'core';
+    const increment = ['legs', 'glutes'].includes(group) ? 2.5 : 1.25;
+
+    const last = history[0];
+    const maxRepNum = parseInt(targetReps) || parseInt(targetReps.split('–').pop()) || 12;
+    const minRepNum = parseInt(targetReps.split('–')[0]) || maxRepNum - 2;
+
+    // Check if user hit all sets at or above target reps in last 2+ sessions at same weight
+    const recentAtSameWeight = history.filter(s => s.maxKg === last.maxKg);
+    const readyToIncrease = recentAtSameWeight.length >= 2 &&
+      recentAtSameWeight.slice(0, 2).every(s => s.avgReps >= minRepNum && s.completedSets >= targetSets);
+
+    // Warmup suggestion: 50% × 8, 70% × 5 of working weight
+    const warmup = last.maxKg >= 20 ? [
+      { kg: Math.round(last.maxKg * 0.5 / 2.5) * 2.5, reps: 8, label: 'Warm-up 1' },
+      { kg: Math.round(last.maxKg * 0.7 / 2.5) * 2.5, reps: 5, label: 'Warm-up 2' },
+    ] : [];
+
+    // Estimated 1RM using Brzycki formula
+    const e1rm = last.maxKg > 0 && last.avgReps > 0 && last.avgReps < 37
+      ? Math.round(last.maxKg * (36 / (37 - last.avgReps)))
+      : null;
+
+    // Trend: compare last 3 sessions max weights
+    let trend = 'stable';
+    if (history.length >= 3) {
+      if (history[0].maxKg > history[1].maxKg && history[1].maxKg > history[2].maxKg) trend = 'up';
+      else if (history[0].maxKg < history[1].maxKg) trend = 'down';
+    }
+
+    return {
+      lastWeight: last.maxKg,
+      lastReps: last.avgReps,
+      lastDate: last.date,
+      sessionsAtWeight: recentAtSameWeight.length,
+      readyToIncrease,
+      suggestedWeight: readyToIncrease ? last.maxKg + increment : last.maxKg,
+      increment,
+      warmup,
+      e1rm,
+      trend,
+      totalSessions: history.length,
+      history: history.slice(0, 5)
+    };
+  },
+
   getStats() {
     return db.getAll('daily').then(all => {
       const withWorkouts = all.filter(d => Object.keys(d.sets || {}).length > 0);

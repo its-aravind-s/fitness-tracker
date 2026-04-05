@@ -306,6 +306,72 @@ body::before {
 .add-set:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
 .add-set:active { transform: scale(0.98); }
 
+/* ─── PROGRESSIVE OVERLOAD SUGGESTION ─── */
+.po-panel {
+  border-top: 1px solid var(--border); padding: 14px 20px;
+  background: var(--surface); display: flex; flex-direction: column; gap: 10px;
+}
+.po-suggest {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-radius: var(--r-sm); font-size: 12px;
+}
+.po-suggest.increase {
+  background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.2);
+}
+.po-suggest.maintain {
+  background: var(--surface2); border: 1px solid var(--border);
+}
+.po-suggest-icon { font-size: 18px; flex-shrink: 0; }
+.po-suggest-text { flex: 1; min-width: 0; }
+.po-suggest-title {
+  font-family: var(--font-head); font-size: 12px; font-weight: 700;
+  color: var(--text); line-height: 1.3;
+}
+.po-suggest-sub { font-size: 10px; color: var(--text2); margin-top: 2px; }
+.po-weight-badge {
+  font-family: var(--font-mono); font-size: 16px; font-weight: 800;
+  color: var(--green); flex-shrink: 0;
+}
+.po-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.po-stat {
+  padding: 8px; background: var(--surface2); border-radius: var(--r-sm);
+  border: 1px solid var(--border); text-align: center;
+}
+.po-stat-val {
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  color: var(--text); line-height: 1;
+}
+.po-stat-label {
+  font-size: 8px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-top: 4px;
+}
+.po-warmup {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.po-warmup-set {
+  padding: 6px 10px; background: var(--surface2); border-radius: var(--r-sm);
+  border: 1px solid var(--border); font-size: 11px; color: var(--text2);
+}
+.po-warmup-set strong { color: var(--text); font-family: var(--font-mono); }
+.po-warmup-label {
+  font-size: 9px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 6px; font-weight: 600;
+}
+.po-history {
+  display: flex; gap: 4px; align-items: flex-end; height: 40px;
+}
+.po-bar {
+  flex: 1; min-width: 0; border-radius: 3px 3px 0 0; background: var(--green);
+  opacity: 0.5; transition: all 0.3s; position: relative;
+}
+.po-bar.latest { opacity: 1; }
+.po-trend { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; }
+.po-trend.up { color: var(--green); }
+.po-trend.down { color: var(--red); }
+.po-trend.stable { color: var(--text3); }
+
 /* ─── REST CARD ─── */
 .rest-card {
   padding: 48px 24px; text-align: center; border-radius: var(--r-lg);
@@ -1440,9 +1506,13 @@ function renderWorkout() {
             <div class="set-check ${s.done?'logged':''}" onclick="toggleSet(${ei},${si})">${s.done?svgCheck(false):''}</div>
           </div>`).join('')}
         <button class="add-set" onclick="addSet(${ei})">+ add set</button>
-      </div>`;
+      </div>
+      <div class="po-panel" id="po-${ei}" style="display:none;"></div>`;
     card.style.setProperty('--ex-accent', gc.color);
     el.appendChild(card);
+
+    // Load progressive overload suggestion async
+    loadPOSuggestion(ei, ex.n, ex.sets, ex.reps);
   });
 
   const btn = document.createElement('button');
@@ -1450,6 +1520,71 @@ function renderWorkout() {
   btn.textContent = 'Save & Update PRs';
   btn.onclick = saveWorkout;
   el.appendChild(btn);
+}
+
+async function loadPOSuggestion(ei, exName, targetSets, targetReps) {
+  const s = await app.getWeightSuggestion(exName, targetSets, targetReps);
+  const el = document.getElementById('po-' + ei);
+  if (!el || !s) return;
+
+  const trendIcons = { up: '&#9650;', down: '&#9660;', stable: '&#9644;' };
+  const trendLabels = { up: 'Progressing', down: 'Regressing', stable: 'Stable' };
+  const maxHist = s.history.length > 0 ? Math.max(...s.history.map(h => h.maxKg)) : 1;
+
+  el.style.display = 'flex';
+  el.innerHTML = `
+    ${s.readyToIncrease ? `
+      <div class="po-suggest increase">
+        <div class="po-suggest-icon">&#128170;</div>
+        <div class="po-suggest-text">
+          <div class="po-suggest-title">Ready to increase!</div>
+          <div class="po-suggest-sub">You've hit ${s.sessionsAtWeight} sessions at ${s.lastWeight} kg. Time to go up by +${s.increment} kg.</div>
+        </div>
+        <div class="po-weight-badge">${s.suggestedWeight} kg</div>
+      </div>
+    ` : `
+      <div class="po-suggest maintain">
+        <div class="po-suggest-icon">&#127919;</div>
+        <div class="po-suggest-text">
+          <div class="po-suggest-title">Keep pushing at ${s.lastWeight} kg</div>
+          <div class="po-suggest-sub">${s.sessionsAtWeight < 2
+            ? `${2 - s.sessionsAtWeight} more session${s.sessionsAtWeight === 1 ? '' : 's'} at target reps before progressing.`
+            : `Hit all ${targetSets} sets × ${targetReps} reps to unlock a progression.`
+          }</div>
+        </div>
+        <div class="po-weight-badge" style="color:var(--text2);">${s.lastWeight} kg</div>
+      </div>
+    `}
+    <div class="po-stats">
+      <div class="po-stat">
+        <div class="po-stat-val">${s.lastWeight}<small> kg</small></div>
+        <div class="po-stat-label">Last Weight</div>
+      </div>
+      <div class="po-stat">
+        <div class="po-stat-val">${s.e1rm ? s.e1rm + '<small> kg</small>' : '—'}</div>
+        <div class="po-stat-label">Est. 1RM</div>
+      </div>
+      <div class="po-stat">
+        <div class="po-stat-val"><span class="po-trend ${s.trend}">${trendIcons[s.trend]} ${trendLabels[s.trend]}</span></div>
+        <div class="po-stat-label">Trend</div>
+      </div>
+    </div>
+    ${s.history.length > 1 ? `
+      <div class="po-warmup-label">Weight History (last ${s.history.length})</div>
+      <div class="po-history">
+        ${s.history.slice().reverse().map((h, i, arr) => `
+          <div class="po-bar${i === arr.length - 1 ? ' latest' : ''}" style="height:${Math.max(15, (h.maxKg / maxHist) * 100)}%;" title="${h.date}: ${h.maxKg} kg × ${h.avgReps}"></div>
+        `).join('')}
+      </div>
+    ` : ''}
+    ${s.warmup.length > 0 ? `
+      <div class="po-warmup-label">Suggested Warm-up</div>
+      <div class="po-warmup">
+        ${s.warmup.map(w => `<div class="po-warmup-set">${w.label}: <strong>${w.kg} kg</strong> × ${w.reps}</div>`).join('')}
+        <div class="po-warmup-set" style="border-color:var(--green-dim);color:var(--green);">Working: <strong>${s.suggestedWeight} kg</strong> × ${targetReps}</div>
+      </div>
+    ` : ''}
+  `;
 }
 
 function toggleEx(hd) {
