@@ -161,6 +161,96 @@ const DEFAULT_VEG_PLAN = {
   0: { vegs: 'Green Beans + Mushroom', qty: '50 g + 50 g', method: 'Steam + Light fry', time: 'Beans 6 min, Mushroom 3 min' },
 };
 
+const DEFAULT_FRUIT_PLAN = {
+  1: { fruit: 'Apple',               qty: '1 medium',             bestTime: '11:00 am', period: 'Mid-morning',  benefit: 'Digestion + fiber' },
+  2: { fruit: 'Banana',              qty: '1 medium',             bestTime: '7:30 am',  period: 'Post workout', benefit: 'Energy + potassium' },
+  3: { fruit: 'Papaya',              qty: '150 g',                bestTime: '9:00 am',  period: 'After breakfast', benefit: 'Digestion + fat loss' },
+  4: { fruit: 'Orange / Sweet lime', qty: '1 medium',             bestTime: '11:00 am', period: 'Mid-morning',  benefit: 'Immunity + Vitamin C' },
+  5: { fruit: 'Pomegranate',         qty: '1 small bowl (100 g)', bestTime: '4:00 pm',  period: 'Afternoon',    benefit: 'Blood flow + recovery' },
+  6: { fruit: 'Watermelon',          qty: '150–200 g',            bestTime: '4:00 pm',  period: 'Afternoon',    benefit: 'Hydration + light calories' },
+  0: { fruit: 'Guava',               qty: '1 medium',             bestTime: '9:00 am',  period: 'Morning',      benefit: 'High fiber + Vitamin C' },
+};
+
+const EXERCISE_META = {
+  // ── LEGS ──
+  'Barbell back squat':        { muscle:'Quads',     type:'Compound', group:'legs',  icon:'squat' },
+  'Bulgarian split squat':     { muscle:'Quads',     type:'Compound', group:'legs',  icon:'lunge' },
+  'Leg press':                 { muscle:'Quads',     type:'Compound', group:'legs',  icon:'legpress' },
+  'Leg extension':             { muscle:'Quads',     type:'Isolation', group:'legs', icon:'legext' },
+  'Standing calf raise':       { muscle:'Calves',    type:'Isolation', group:'calves', icon:'calf' },
+  'Seated calf raise':         { muscle:'Calves',    type:'Isolation', group:'calves', icon:'calf' },
+  'Romanian deadlift':         { muscle:'Hamstrings', type:'Compound', group:'legs', icon:'deadlift' },
+  'Hack squat / leg press':    { muscle:'Quads',     type:'Compound', group:'legs',  icon:'legpress' },
+  'Seated leg curl':           { muscle:'Hamstrings', type:'Isolation', group:'legs', icon:'legcurl' },
+  'Hip thrust (barbell)':      { muscle:'Glutes',    type:'Compound', group:'glutes', icon:'hipthrust' },
+  'Cable kickback':            { muscle:'Glutes',    type:'Isolation', group:'glutes', icon:'kickback' },
+  // ── PUSH ──
+  'Flat barbell bench press':  { muscle:'Chest',     type:'Compound', group:'chest', icon:'bench' },
+  'Incline dumbbell press':    { muscle:'Upper Chest', type:'Compound', group:'chest', icon:'incline' },
+  'Cable fly (low to high)':   { muscle:'Chest',     type:'Isolation', group:'chest', icon:'fly' },
+  'Seated dumbbell OHP':       { muscle:'Shoulders', type:'Compound', group:'shoulders', icon:'ohp' },
+  'Lateral raise':             { muscle:'Side Delts', type:'Isolation', group:'shoulders', icon:'lateral' },
+  'Overhead tricep extension': { muscle:'Triceps',   type:'Isolation', group:'arms', icon:'tricep' },
+  'Tricep pushdown (rope)':    { muscle:'Triceps',   type:'Isolation', group:'arms', icon:'pushdown' },
+  // ── PULL ──
+  'Weighted pull-up / lat pulldown': { muscle:'Lats', type:'Compound', group:'back', icon:'pullup' },
+  'Barbell bent-over row':     { muscle:'Back',      type:'Compound', group:'back', icon:'row' },
+  'Seated cable row':          { muscle:'Back',      type:'Compound', group:'back', icon:'row' },
+  'Single-arm dumbbell row':   { muscle:'Back',      type:'Compound', group:'back', icon:'row' },
+  'Reverse pec deck / face pull': { muscle:'Rear Delts', type:'Isolation', group:'shoulders', icon:'facepull' },
+  'Incline dumbbell curl':     { muscle:'Biceps',    type:'Isolation', group:'arms', icon:'curl' },
+  'Hammer curl':               { muscle:'Biceps',    type:'Isolation', group:'arms', icon:'curl' },
+  // ── ARMS + CORE ──
+  'EZ-bar curl':               { muscle:'Biceps',    type:'Isolation', group:'arms', icon:'curl' },
+  'Concentration curl':        { muscle:'Biceps',    type:'Isolation', group:'arms', icon:'curl' },
+  'Close-grip bench press':    { muscle:'Triceps',   type:'Compound', group:'arms', icon:'bench' },
+  'Skull crusher (EZ bar)':    { muscle:'Triceps',   type:'Isolation', group:'arms', icon:'tricep' },
+  'Lateral raise + face pull superset': { muscle:'Shoulders', type:'Isolation', group:'shoulders', icon:'lateral' },
+  'Cable crunch':              { muscle:'Abs',       type:'Isolation', group:'core', icon:'crunch' },
+  'Ab wheel rollout':          { muscle:'Core',      type:'Compound', group:'core', icon:'crunch' },
+  'Hanging knee/leg raise':    { muscle:'Lower Abs', type:'Isolation', group:'core', icon:'legraise' },
+};
+
+const GROUP_COLORS = {
+  legs:      { bg: 'rgba(68,138,255,0.1)',  border: 'rgba(68,138,255,0.25)', color: '#448aff', gradient: 'linear-gradient(135deg,#448aff,#2979ff)' },
+  chest:     { bg: 'rgba(0,230,118,0.1)',   border: 'rgba(0,230,118,0.25)', color: '#00e676', gradient: 'linear-gradient(135deg,#00e676,#00c853)' },
+  back:      { bg: 'rgba(255,196,0,0.1)',   border: 'rgba(255,196,0,0.25)', color: '#ffc400', gradient: 'linear-gradient(135deg,#ffc400,#ffab00)' },
+  shoulders: { bg: 'rgba(224,64,251,0.1)',  border: 'rgba(224,64,251,0.25)', color: '#e040fb', gradient: 'linear-gradient(135deg,#e040fb,#d500f9)' },
+  arms:      { bg: 'rgba(255,112,67,0.1)',  border: 'rgba(255,112,67,0.25)', color: '#ff7043', gradient: 'linear-gradient(135deg,#ff7043,#ff5722)' },
+  glutes:    { bg: 'rgba(38,198,218,0.1)',  border: 'rgba(38,198,218,0.25)', color: '#26c6da', gradient: 'linear-gradient(135deg,#26c6da,#00bcd4)' },
+  calves:    { bg: 'rgba(141,110,99,0.1)',  border: 'rgba(141,110,99,0.25)', color: '#8d6e63', gradient: 'linear-gradient(135deg,#8d6e63,#795548)' },
+  core:      { bg: 'rgba(255,23,68,0.1)',   border: 'rgba(255,23,68,0.25)', color: '#ff1744', gradient: 'linear-gradient(135deg,#ff1744,#d50000)' },
+};
+
+const EX_SVGS = {
+  squat:    `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="27" y="2" width="10" height="4" rx="2" fill="currentColor" opacity=".3"/><circle cx="32" cy="14" r="6" fill="currentColor" opacity=".6"/><path d="M26 22h12l2 14h-4l-1 12h-2l1-12h-4l1 12h-2l-1-12h-4z" fill="currentColor" opacity=".5"/><path d="M22 36l4-2 2 10-6 4z" fill="currentColor" opacity=".4"/><path d="M42 36l-4-2-2 10 6 4z" fill="currentColor" opacity=".4"/><rect x="14" y="6" width="36" height="3" rx="1.5" fill="currentColor" opacity=".25"/></svg>`,
+  lunge:    `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="12" r="6" fill="currentColor" opacity=".6"/><path d="M30 20h4l1 10 6 12h-4l-5-10-5 10h-4l6-12z" fill="currentColor" opacity=".5"/><path d="M38 42l4 8h-4l-2-6z" fill="currentColor" opacity=".4"/><path d="M22 42l-2 8h4l2-6z" fill="currentColor" opacity=".4"/></svg>`,
+  legpress: `<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="40" width="48" height="4" rx="2" fill="currentColor" opacity=".2"/><path d="M20 28c0-3 2-5 5-5h14c3 0 5 2 5 5v12H20z" fill="currentColor" opacity=".15"/><circle cx="32" cy="14" r="5" fill="currentColor" opacity=".6"/><path d="M28 22h8l1 8-3 6h-4l-3-6z" fill="currentColor" opacity=".5"/><path d="M24 36l-2 4h4z" fill="currentColor" opacity=".4"/><path d="M40 36l2 4h-4z" fill="currentColor" opacity=".4"/></svg>`,
+  legext:   `<svg viewBox="0 0 64 64" fill="none"><rect x="16" y="30" width="20" height="14" rx="3" fill="currentColor" opacity=".15"/><circle cx="26" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M24 24h4v10h-4z" fill="currentColor" opacity=".4"/><path d="M28 34l14-2v4l-14 2z" fill="currentColor" opacity=".5"/><circle cx="44" cy="35" r="3" fill="currentColor" opacity=".3"/></svg>`,
+  calf:     `<svg viewBox="0 0 64 64" fill="none"><rect x="20" y="48" width="24" height="6" rx="2" fill="currentColor" opacity=".2"/><circle cx="32" cy="12" r="5" fill="currentColor" opacity=".6"/><path d="M29 18h6v16h-6z" fill="currentColor" opacity=".4"/><path d="M28 34h8v14h-8z" fill="currentColor" opacity=".5"/><path d="M30 44l-2 8h2z" fill="currentColor" opacity=".3"/><path d="M34 44l2 8h-2z" fill="currentColor" opacity=".3"/></svg>`,
+  deadlift: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="10" r="5" fill="currentColor" opacity=".6"/><path d="M28 16h8l2 14-4 4h-4l-4-4z" fill="currentColor" opacity=".4"/><rect x="12" y="42" width="40" height="4" rx="2" fill="currentColor" opacity=".3"/><path d="M26 30l-2 12h4z" fill="currentColor" opacity=".4"/><path d="M38 30l2 12h-4z" fill="currentColor" opacity=".4"/><circle cx="10" cy="44" r="5" fill="currentColor" opacity=".15"/><circle cx="54" cy="44" r="5" fill="currentColor" opacity=".15"/></svg>`,
+  legcurl:  `<svg viewBox="0 0 64 64" fill="none"><rect x="10" y="20" width="32" height="10" rx="3" fill="currentColor" opacity=".15"/><circle cx="22" cy="14" r="5" fill="currentColor" opacity=".6"/><path d="M18 20h8v10h-8z" fill="currentColor" opacity=".4"/><path d="M26 30l12 10v-4l-12-8z" fill="currentColor" opacity=".5"/><circle cx="40" cy="42" r="3" fill="currentColor" opacity=".3"/></svg>`,
+  hipthrust:`<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="32" width="20" height="12" rx="3" fill="currentColor" opacity=".15"/><circle cx="20" cy="24" r="5" fill="currentColor" opacity=".6"/><path d="M18 30h4l10-6v4l-10 6z" fill="currentColor" opacity=".5"/><path d="M32 28l12 1v3l-12-1z" fill="currentColor" opacity=".4"/><rect x="30" y="24" width="20" height="4" rx="2" fill="currentColor" opacity=".3"/></svg>`,
+  kickback: `<svg viewBox="0 0 64 64" fill="none"><circle cx="20" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M18 24h4l2 12h-8z" fill="currentColor" opacity=".4"/><path d="M22 36l16-4v4l-16 4z" fill="currentColor" opacity=".5"/></svg>`,
+  bench:    `<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="30" width="48" height="4" rx="2" fill="currentColor" opacity=".2"/><rect x="18" y="34" width="4" height="14" rx="1" fill="currentColor" opacity=".15"/><rect x="42" y="34" width="4" height="14" rx="1" fill="currentColor" opacity=".15"/><circle cx="32" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M28 24h8v6h-8z" fill="currentColor" opacity=".4"/><path d="M22 22l-6-8h4l6 8z" fill="currentColor" opacity=".3"/><path d="M42 22l6-8h-4l-6 8z" fill="currentColor" opacity=".3"/><rect x="10" y="12" width="44" height="3" rx="1.5" fill="currentColor" opacity=".25"/></svg>`,
+  incline:  `<svg viewBox="0 0 64 64" fill="none"><path d="M16 44l10-20h12l10 20z" fill="currentColor" opacity=".1"/><circle cx="32" cy="16" r="5" fill="currentColor" opacity=".6"/><path d="M28 22h8l1 8h-10z" fill="currentColor" opacity=".4"/><path d="M20 16l-6-6h4l6 6z" fill="currentColor" opacity=".3"/><path d="M44 16l6-6h-4l-6 6z" fill="currentColor" opacity=".3"/><rect x="10" y="8" width="44" height="3" rx="1.5" fill="currentColor" opacity=".25"/></svg>`,
+  fly:      `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="16" r="5" fill="currentColor" opacity=".6"/><path d="M28 22h8v8h-8z" fill="currentColor" opacity=".4"/><path d="M16 18c4 4 8 8 12 8" stroke="currentColor" stroke-width="2.5" opacity=".5" stroke-linecap="round"/><path d="M48 18c-4 4-8 8-12 8" stroke="currentColor" stroke-width="2.5" opacity=".5" stroke-linecap="round"/></svg>`,
+  ohp:      `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M29 24h6v14h-6z" fill="currentColor" opacity=".4"/><path d="M24 24l-4-14h4l4 14z" fill="currentColor" opacity=".4"/><path d="M40 24l4-14h-4l-4 14z" fill="currentColor" opacity=".4"/><rect x="14" y="6" width="36" height="3" rx="1.5" fill="currentColor" opacity=".3"/><circle cx="12" cy="8" r="3" fill="currentColor" opacity=".15"/><circle cx="52" cy="8" r="3" fill="currentColor" opacity=".15"/></svg>`,
+  lateral:  `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="14" r="5" fill="currentColor" opacity=".6"/><path d="M29 20h6v16h-6z" fill="currentColor" opacity=".4"/><path d="M28 24l-14 2v-3l14-2z" fill="currentColor" opacity=".5"/><path d="M36 24l14 2v-3l-14-2z" fill="currentColor" opacity=".5"/><circle cx="12" cy="27" r="3" fill="currentColor" opacity=".3"/><circle cx="52" cy="27" r="3" fill="currentColor" opacity=".3"/></svg>`,
+  tricep:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="14" r="5" fill="currentColor" opacity=".6"/><path d="M29 20h6v12h-6z" fill="currentColor" opacity=".4"/><path d="M30 20l-2-10h4z" fill="currentColor" opacity=".4"/><path d="M34 20l2-10h-4z" fill="currentColor" opacity=".4"/><circle cx="30" cy="8" r="2" fill="currentColor" opacity=".3"/><circle cx="34" cy="8" r="2" fill="currentColor" opacity=".3"/></svg>`,
+  pushdown: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="14" r="5" fill="currentColor" opacity=".6"/><path d="M29 20h6v10h-6z" fill="currentColor" opacity=".4"/><path d="M28 26l-2 14h4l2-10z" fill="currentColor" opacity=".45"/><path d="M36 26l2 14h-4l-2-10z" fill="currentColor" opacity=".45"/><rect x="24" y="12" width="16" height="2" rx="1" fill="currentColor" opacity=".2"/></svg>`,
+  pullup:   `<svg viewBox="0 0 64 64" fill="none"><rect x="8" y="4" width="48" height="4" rx="2" fill="currentColor" opacity=".3"/><circle cx="32" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M29 24h6v14h-6z" fill="currentColor" opacity=".4"/><path d="M24 8l4 10h-4z" fill="currentColor" opacity=".35"/><path d="M40 8l-4 10h4z" fill="currentColor" opacity=".35"/></svg>`,
+  row:      `<svg viewBox="0 0 64 64" fill="none"><circle cx="24" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M22 24h4l4 10h-12z" fill="currentColor" opacity=".4"/><path d="M28 28l18-4v3l-18 4z" fill="currentColor" opacity=".5"/><circle cx="48" cy="23" r="3" fill="currentColor" opacity=".3"/></svg>`,
+  facepull: `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="16" r="5" fill="currentColor" opacity=".6"/><path d="M29 22h6v12h-6z" fill="currentColor" opacity=".4"/><path d="M28 26l-10-6v3l10 6z" fill="currentColor" opacity=".45"/><path d="M36 26l10-6v3l-10 6z" fill="currentColor" opacity=".45"/></svg>`,
+  curl:     `<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="14" r="5" fill="currentColor" opacity=".6"/><path d="M29 20h6v14h-6z" fill="currentColor" opacity=".4"/><path d="M28 28c-4-8-6-10-6-14h3c0 3 2 5 5 12z" fill="currentColor" opacity=".5"/><path d="M36 28c4-8 6-10 6-14h-3c0 3-2 5-5 12z" fill="currentColor" opacity=".5"/><circle cx="21" cy="13" r="2.5" fill="currentColor" opacity=".3"/><circle cx="43" cy="13" r="2.5" fill="currentColor" opacity=".3"/></svg>`,
+  crunch:   `<svg viewBox="0 0 64 64" fill="none"><circle cx="22" cy="18" r="5" fill="currentColor" opacity=".6"/><path d="M14 36c0-4 4-8 8-12l6 4c-4 4-6 6-6 8z" fill="currentColor" opacity=".4"/><path d="M30 28l14 4v-3l-14-4z" fill="currentColor" opacity=".5"/><rect x="10" y="38" width="44" height="3" rx="1.5" fill="currentColor" opacity=".15"/></svg>`,
+  legraise: `<svg viewBox="0 0 64 64" fill="none"><rect x="26" y="4" width="4" height="20" rx="2" fill="currentColor" opacity=".2"/><circle cx="28" cy="28" r="5" fill="currentColor" opacity=".6"/><path d="M26 34h4v8h-4z" fill="currentColor" opacity=".4"/><path d="M28 42l10-14h-3l-9 12z" fill="currentColor" opacity=".5"/><path d="M28 42l-10-14h3l9 12z" fill="currentColor" opacity=".5"/></svg>`,
+};
+
+function getExMeta(name) {
+  return EXERCISE_META[name] || { muscle: 'General', type: 'Exercise', group: 'core', icon: 'squat' };
+}
+
 const KEY_LIFTS = ['Barbell back squat','Romanian deadlift','Flat barbell bench press','Weighted pull-up / lat pulldown','Barbell bent-over row','Hip thrust (barbell)','Close-grip bench press','Seated leg curl'];
 
 let app = {

@@ -233,20 +233,41 @@ body::before {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--r); margin-bottom: 14px; overflow: hidden;
   transition: all 0.2s ease; box-shadow: var(--shadow-sm);
+  position: relative;
 }
 .ex-card:hover { border-color: var(--border2); }
+.ex-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  border-radius: var(--r) 0 0 var(--r); background: var(--ex-accent, var(--green));
+}
 .ex-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px; cursor: pointer; transition: background 0.15s;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 16px 16px 20px; cursor: pointer; transition: background 0.15s;
 }
 .ex-header:hover { background: var(--surface2); }
 .ex-header:active { transform: scale(0.99); }
-.ex-name { font-family: var(--font-head); font-size: 15px; font-weight: 700; color: var(--text); }
-.ex-target { font-size: 11px; color: var(--text2); margin-top: 5px; }
+.ex-illust {
+  width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.ex-illust svg { width: 36px; height: 36px; }
+.ex-info { flex: 1; min-width: 0; }
+.ex-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--text); }
+.ex-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+.ex-target { font-size: 11px; color: var(--text2); }
+.ex-muscle-tag {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 2px 6px; border-radius: 4px;
+}
+.ex-type-tag {
+  font-size: 8px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; padding: 2px 6px; border-radius: 4px;
+  background: var(--surface2); color: var(--text3);
+}
 .ex-progress {
   font-size: 14px; font-weight: 700; color: var(--green);
   font-family: var(--font-mono); background: var(--green-dim);
-  padding: 4px 10px; border-radius: 8px;
+  padding: 4px 10px; border-radius: 8px; flex-shrink: 0;
 }
 .ex-body { display: none; border-top: 1px solid var(--border); padding: 16px 20px 20px; background: var(--surface2); }
 .ex-body.open { display: block; animation: fadeUp 0.2s ease; }
@@ -764,6 +785,22 @@ textarea.form-input { min-height: 120px; resize: vertical; }
 .tl-bell svg { width: 14px; height: 14px; }
 .tl-title-row { display: flex; align-items: center; gap: 6px; }
 .tl-title-row .tl-title { flex: 1; }
+.tl-tag-fruit { background: rgba(255,112,67,0.12); color: #ff7043; }
+.tl-fruit-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 12px; margin: 4px 0 0;
+}
+.tl-fruit-info {
+  display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: var(--text2);
+}
+.tl-fruit-info span { display: flex; align-items: center; gap: 4px; }
+.tl-fruit-info strong { color: var(--text); font-weight: 600; }
+
+.shop-divider {
+  width: 1px; height: 32px; background: var(--border); flex-shrink: 0;
+}
+.shop-section { flex: 1; min-width: 0; }
+.shop-sections { display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0; }
 </style>
 </head>
 <body>
@@ -1215,16 +1252,19 @@ function renderToday() {
   const el = document.getElementById('timeline-container');
   el.innerHTML = '';
 
-  const tagLabels = { meal:'Meal', supp:'Supplement', gym:'Workout', cardio:'Cardio', food:'Nutrition', wake:'Routine', veg:'Veg Prep' };
+  const tagLabels = { meal:'Meal', supp:'Supplement', gym:'Workout', cardio:'Cardio', food:'Nutrition', wake:'Routine', veg:'Veg Prep', fruit:'Fruit' };
 
   const sorted = app.mealPlan.map((item, i) => ({ ...item, idx: i })).sort((a, b) => (a.ord || 0) - (b.ord || 0));
 
   const dow = app.dayOf(offset);
   const veg = DEFAULT_VEG_PLAN[dow];
+  const fruit = DEFAULT_FRUIT_PLAN[dow];
+  const fruitHour = fruit ? parseTimeToHour(fruit.bestTime) : -1;
+  let fruitInserted = false;
 
   const groups = [];
   let lastGroup = '';
-  sorted.forEach(item => {
+  sorted.forEach((item, si) => {
     const hour = parseTimeToHour(item.time);
     let groupName;
     if (hour < 6) groupName = 'Early Morning';
@@ -1237,12 +1277,23 @@ function renderToday() {
       groups.push({ type: 'header', name: groupName });
       lastGroup = groupName;
     }
+
+    // Insert fruit right before the first item whose hour >= fruitHour
+    if (fruit && !fruitInserted && hour >= fruitHour) {
+      groups.push({ type: 'fruit', fruit });
+      fruitInserted = true;
+    }
+
     groups.push({ type: 'item', ...item });
 
     if (item.tag === 'meal' && (item.title === 'Lunch' || item.title === 'Dinner') && veg) {
       groups.push({ type: 'veg', veg });
     }
   });
+  // If fruit wasn't inserted yet (time is after all items), add at end
+  if (fruit && !fruitInserted) {
+    groups.push({ type: 'fruit', fruit });
+  }
 
   groups.forEach(entry => {
     if (entry.type === 'header') {
@@ -1269,6 +1320,22 @@ function renderToday() {
         </div>
       </div>`;
       el.appendChild(vegDiv);
+      return;
+    }
+    if (entry.type === 'fruit') {
+      const f = entry.fruit;
+      const fruitDiv = document.createElement('div');
+      fruitDiv.className = 'tl-item';
+      fruitDiv.style.cursor = 'default';
+      fruitDiv.innerHTML = `
+        <div class="tl-time">${f.bestTime}</div>
+        <div class="tl-dot-col"><div class="tl-dot" style="border-color:#ff7043;background:#ff7043;box-shadow:0 0 8px rgba(255,112,67,0.3);"></div></div>
+        <div class="tl-body">
+          <div class="tl-title">&#127815; ${f.fruit}</div>
+          <div class="tl-sub">${f.qty} &middot; ${f.benefit}</div>
+          <span class="tl-tag tl-tag-fruit">${f.period}</span>
+        </div>`;
+      el.appendChild(fruitDiv);
       return;
     }
 
@@ -1345,10 +1412,22 @@ function renderWorkout() {
     while (sets[ek].length < ex.sets) sets[ek].push({kg:'',reps:'',done:false});
     const doneCount = sets[ek].filter(s=>s.done).length;
 
+    const meta = getExMeta(ex.n);
+    const gc = GROUP_COLORS[meta.group] || GROUP_COLORS.core;
+    const svg = EX_SVGS[meta.icon] || EX_SVGS.squat;
+
     const card = document.createElement('div');
     card.className = 'ex-card';
     card.innerHTML = `<div class="ex-header" onclick="toggleEx(this)">
-        <div><div class="ex-name">${ex.n}</div><div class="ex-target">Target: ${ex.sets} sets × ${ex.reps}</div></div>
+        <div class="ex-illust" style="background:${gc.bg};color:${gc.color};">${svg}</div>
+        <div class="ex-info">
+          <div class="ex-name">${ex.n}</div>
+          <div class="ex-meta">
+            <span class="ex-muscle-tag" style="background:${gc.bg};color:${gc.color};">${meta.muscle}</span>
+            <span class="ex-type-tag">${meta.type}</span>
+            <span class="ex-target">${ex.sets} × ${ex.reps}</span>
+          </div>
+        </div>
         <div class="ex-progress">${doneCount}/${sets[ek].length}</div>
       </div>
       <div class="ex-body ${doneCount>0?'open':''}">
@@ -1362,6 +1441,7 @@ function renderWorkout() {
           </div>`).join('')}
         <button class="add-set" onclick="addSet(${ei})">+ add set</button>
       </div>`;
+    card.style.setProperty('--ex-accent', gc.color);
     el.appendChild(card);
   });
 
@@ -1606,22 +1686,34 @@ function renderShoppingBanner() {
   const el = document.getElementById('shopping-banner');
   const dow = app.dayOf(offset);
   const veg = DEFAULT_VEG_PLAN[dow];
+  const fruit = DEFAULT_FRUIT_PLAN[dow];
 
-  if (!veg) { el.innerHTML = ''; return; }
+  if (!veg && !fruit) { el.innerHTML = ''; return; }
 
-  const veggies = veg.vegs.split(' + ').map(v => v.trim());
-  const quantities = veg.qty.split(' + ').map(q => q.trim());
+  const veggies = veg ? veg.vegs.split(' + ').map(v => v.trim()) : [];
+  const vegQtys = veg ? veg.qty.split(' + ').map(q => q.trim()) : [];
+  const allItems = [...veggies, ...(fruit ? [fruit.fruit] : [])];
 
   el.innerHTML = `
     <div class="shop-banner">
       <div class="shop-icon">&#128722;</div>
-      <div class="shop-content">
-        <div class="shop-label">Today's Ingredients</div>
-        <div class="shop-items">${veggies.join(' &middot; ')}</div>
-        <div class="shop-meta">
-          ${veggies.map((v, i) => `<span class="shop-meta-item">&#129382; ${v} <strong>${quantities[i] || ''}</strong></span>`).join('')}
-          <span class="shop-meta-item">&#127859; ${veg.method}</span>
-        </div>
+      <div class="shop-sections">
+        ${veg ? `<div class="shop-section">
+          <div class="shop-label">&#129382; Vegetables</div>
+          <div class="shop-items">${veggies.join(' &middot; ')}</div>
+          <div class="shop-meta">
+            ${veggies.map((v, i) => `<span class="shop-meta-item">${v} <strong>${vegQtys[i] || ''}</strong></span>`).join('')}
+          </div>
+        </div>` : ''}
+        ${veg && fruit ? '<div class="shop-divider"></div>' : ''}
+        ${fruit ? `<div class="shop-section">
+          <div class="shop-label">&#127352; Fruit</div>
+          <div class="shop-items">${fruit.fruit}</div>
+          <div class="shop-meta">
+            <span class="shop-meta-item"><strong>${fruit.qty}</strong></span>
+            <span class="shop-meta-item">${fruit.period}</span>
+          </div>
+        </div>` : ''}
       </div>
     </div>`;
 }
