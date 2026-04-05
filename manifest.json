@@ -2,7 +2,7 @@
   "name": "FitTracker — Diet & Workout",
   "short_name": "FitTrack",
   "description": "Your personal diet, supplement and workout tracker",
-  "start_url": "/",
+  "start_url": "/fitness-tracker/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
