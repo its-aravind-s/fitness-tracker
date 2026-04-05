@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fittracker-v2';
+const CACHE_NAME = 'fittracker-v3';
 const STATIC_ASSETS = [
   '/fitness-tracker/',
   '/fitness-tracker/index.html',
